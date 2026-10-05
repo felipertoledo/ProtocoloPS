@@ -1,0 +1,47 @@
+<section class="hero calc-hero">
+  <h1>Calculadora de diluição e infusão</h1>
+  <p class="lead">Drogas vasoativas, sedativos, antiarrítmicos e infusões usadas nos protocolos. Converte dose → mL/h e mL/h → dose. Todos os campos de apresentação e volume são editáveis.</p>
+  <div class="box box-warn"><b>Antes de programar a bomba:</b> confira a <b>apresentação da ampola em uso</b> (mg/mL) e o volume final — lotes e fornecedores mudam. A calculadora não substitui a dupla checagem com a enfermagem nem a prescrição assinada.</div>
+</section>
+
+<section class="calc" id="calc">
+  <div class="calc-grid">
+    <div class="calc-card">
+      <h2>1. Paciente e droga</h2>
+      <label>Peso (kg) <input id="c-peso" type="number" inputmode="decimal" min="1" max="300" step="0.5" value="70"></label>
+      <label>Droga <select id="c-droga"></select></label>
+      <p class="small" id="c-faixa"></p>
+      <p class="small" id="c-nota"></p>
+    </div>
+    <div class="calc-card">
+      <h2>2. Preparo (editável)</h2>
+      <label>Ampola: <span id="c-amp-lbl">mg</span> por ampola <input id="c-amp-mg" type="number" inputmode="decimal" step="any"></label>
+      <label>Volume da ampola (mL) <input id="c-amp-ml" type="number" inputmode="decimal" step="any"></label>
+      <label>Nº de ampolas <input id="c-n" type="number" inputmode="numeric" min="1" step="1" value="1"></label>
+      <label>Volume final da solução (mL) <input id="c-vol" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out"><span>Concentração</span><strong id="c-conc">—</strong></div>
+    </div>
+    <div class="calc-card">
+      <h2>3. Dose ⇄ velocidade</h2>
+      <label>Dose desejada (<span id="c-unit">mcg/kg/min</span>) <input id="c-dose" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out big"><span>Velocidade da bomba</span><strong id="c-rate">—</strong></div>
+      <hr>
+      <label>Ou: velocidade atual (mL/h) <input id="c-rate-in" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out"><span>Dose correspondente</span><strong id="c-dose-out">—</strong></div>
+    </div>
+  </div>
+  <div class="calc-card">
+    <h2>Tabela rápida para este preparo</h2>
+    <p class="small">Velocidade (mL/h) para doses dentro da faixa do protocolo, no peso informado.</p>
+    <div class="tbl-wrap"><table id="c-table"></table></div>
+  </div>
+</section>
+
+<section class="calc" id="bolus">
+  <div class="calc-card">
+    <h2>Doses por peso (bólus e volumes)</h2>
+    <p class="small">Calculadas com o peso informado acima. Fonte: protocolo indicado em cada linha. Máximos aplicados automaticamente.</p>
+    <div class="calc-inline"><label>Idade (anos) <input id="b-idade" type="number" inputmode="numeric" min="0" max="120" value="50"></label><label>SCQ (%) — queimadura <input id="b-scq" type="number" inputmode="numeric" min="0" max="100" value="0"></label></div>
+    <div class="tbl-wrap"><table id="b-table"></table></div>
+  </div>
+</section>

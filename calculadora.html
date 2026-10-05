@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calculadora de diluição e infusão — PS Natal Diegues</title>
+<meta name="description" content="Calculadora de diluição, velocidade de infusão e doses por peso das drogas usadas nos protocolos do PS Natal Diegues.">
+<meta name="theme-color" content="#1F3A5F">
+<link rel="icon" href="./assets/brasao.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./assets/style.css">
+<script src="./assets/calc.js" defer></script>
+</head>
+<body>
+
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<div class="govbar"><div class="wrap"><span>Prefeitura Municipal de Estiva Gerbi / SP</span><span class="sep">•</span><span>Secretaria Municipal de Saúde</span><span class="sep">•</span><span>Pronto-Socorro Natal Diegues</span></div></div>
+<header class="site-head compact">
+  <div class="wrap head-row">
+    <a class="brand" href="./index.html" aria-label="Página inicial — Protocolos PS Natal Diegues">
+      <img src="./assets/brasao.png" alt="Brasão de Estiva Gerbi — Luta e Conquista" width="56" height="56">
+      <span class="brand-txt"><strong>Protocolos de Urgência e Emergência</strong><small>Pronto-Socorro Natal Diegues — Estiva Gerbi/SP</small></span>
+    </a>
+    <nav class="topnav" aria-label="Principal"><a href="./index.html">Protocolos</a><a href="./calculadora.html">Calculadora</a></nav>
+    <img class="logo-pref" src="./assets/prefeitura.png" alt="Prefeitura Municipal de Estiva Gerbi — Um governo humanizado" width="150">
+  </div>
+</header>
+<main id="main" class="wrap">
+<section class="hero calc-hero">
+  <h1>Calculadora de diluição e infusão</h1>
+  <p class="lead">Drogas vasoativas, sedativos, antiarrítmicos e infusões usadas nos protocolos. Converte dose → mL/h e mL/h → dose. Todos os campos de apresentação e volume são editáveis.</p>
+  <div class="box box-warn"><b>Antes de programar a bomba:</b> confira a <b>apresentação da ampola em uso</b> (mg/mL) e o volume final — lotes e fornecedores mudam. A calculadora não substitui a dupla checagem com a enfermagem nem a prescrição assinada.</div>
+</section>
+
+<section class="calc" id="calc">
+  <div class="calc-grid">
+    <div class="calc-card">
+      <h2>1. Paciente e droga</h2>
+      <label>Peso (kg) <input id="c-peso" type="number" inputmode="decimal" min="1" max="300" step="0.5" value="70"></label>
+      <label>Droga <select id="c-droga"></select></label>
+      <p class="small" id="c-faixa"></p>
+      <p class="small" id="c-nota"></p>
+    </div>
+    <div class="calc-card">
+      <h2>2. Preparo (editável)</h2>
+      <label>Ampola: <span id="c-amp-lbl">mg</span> por ampola <input id="c-amp-mg" type="number" inputmode="decimal" step="any"></label>
+      <label>Volume da ampola (mL) <input id="c-amp-ml" type="number" inputmode="decimal" step="any"></label>
+      <label>Nº de ampolas <input id="c-n" type="number" inputmode="numeric" min="1" step="1" value="1"></label>
+      <label>Volume final da solução (mL) <input id="c-vol" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out"><span>Concentração</span><strong id="c-conc">—</strong></div>
+    </div>
+    <div class="calc-card">
+      <h2>3. Dose ⇄ velocidade</h2>
+      <label>Dose desejada (<span id="c-unit">mcg/kg/min</span>) <input id="c-dose" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out big"><span>Velocidade da bomba</span><strong id="c-rate">—</strong></div>
+      <hr>
+      <label>Ou: velocidade atual (mL/h) <input id="c-rate-in" type="number" inputmode="decimal" step="any"></label>
+      <div class="calc-out"><span>Dose correspondente</span><strong id="c-dose-out">—</strong></div>
+    </div>
+  </div>
+  <div class="calc-card">
+    <h2>Tabela rápida para este preparo</h2>
+    <p class="small">Velocidade (mL/h) para doses dentro da faixa do protocolo, no peso informado.</p>
+    <div class="tbl-wrap"><table id="c-table"></table></div>
+  </div>
+</section>
+
+<section class="calc" id="bolus">
+  <div class="calc-card">
+    <h2>Doses por peso (bólus e volumes)</h2>
+    <p class="small">Calculadas com o peso informado acima. Fonte: protocolo indicado em cada linha. Máximos aplicados automaticamente.</p>
+    <div class="calc-inline"><label>Idade (anos) <input id="b-idade" type="number" inputmode="numeric" min="0" max="120" value="50"></label><label>SCQ (%) — queimadura <input id="b-scq" type="number" inputmode="numeric" min="0" max="100" value="0"></label></div>
+    <div class="tbl-wrap"><table id="b-table"></table></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-grid">
+    <div>
+      <strong>Série de protocolos institucionais — PS Natal Diegues</strong>
+      <p>Elaboração: Felipe Ribeiro Toledo — Médico — CRM-SP 216.986. Versão 1.0 (minuta) — data-base setembro/2026. Documentos pendentes de aprovação pela Direção Clínica e Coordenação do PS; campos de vigência em branco até a assinatura.</p>
+    </div>
+    <div>
+      <strong>Uso</strong>
+      <p>Material de apoio à decisão para a equipe do PS. Não substitui o julgamento clínico à beira-leito nem a bula/diretriz vigente. Doses são expressas como dose total/taxa; <b>apresentações e diluições variam por lote</b> — conferir sempre a ampola em uso (ver <a href="./calculadora.html">calculadora</a>).</p>
+    </div>
+    <div>
+      <strong>Documentos</strong>
+      <p><a href="./pdf/PS_NatalDiegues_00_INDICE_e_PENDENCIAS.pdf">Índice geral e pendências (PDF)</a><br><a href="./index.html#rede">Rede de referência pactuada</a></p>
+    </div>
+  </div>
+  <div class="wrap foot-cred"><span><b>Desenvolvido por</b> Felipe Ribeiro Toledo — Médico — CRM-SP 216.986</span><span><b>Verificação e validação dos dados e protocolos</b> Edgar Aguiar</span></div>
+  <div class="wrap foot-bottom">Prefeitura Municipal de Estiva Gerbi — Secretaria Municipal de Saúde • Site estático para consulta rápida.</div>
+</footer>
+<script src="./assets/app.js" defer></script>
+</body>
+</html>

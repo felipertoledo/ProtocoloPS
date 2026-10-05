@@ -38,8 +38,16 @@ def strip_tags(h):
     t = re.sub(r"<[^>]+>", " ", h)
     return re.sub(r"\s+", " ", html.unescape(t)).strip()
 
+SUPPLY = re.compile(r"apresenta|estoque|disponib|REMUME|farm[aá]cia|preparo|glucagon|nitroglicerina|tiras|medidor|bal[aã]o|equipamento|CRIE|soro|tabela local|CCIH", re.I)
+TIP_MED = "Verificar a apresentação e a posologia disponíveis no momento: lotes e fornecedores mudam. A dose total do protocolo permanece; o preparo deve ser conferido na ampola em uso."
+TIP_GEN = "Item a conferir localmente antes da aprovação institucional. Para medicamentos, verificar sempre a apresentação e a posologia disponíveis no momento (podem mudar por lote)."
 def mark_verif(h):
-    return re.sub(r"\[(VERIFICAR|PACTUAR)[^\]]*\]", lambda m: f'<mark class="verif">{m.group(0)}</mark>', h)
+    def rep(m):
+        inner = m.group(0)
+        if SUPPLY.search(inner):
+            return f'<mark class="verif verif-med" title="{TIP_MED}">⚠ verificar posologia/apresentação disponível no momento</mark>'
+        return f'<mark class="verif" title="{TIP_GEN}">{inner}</mark>'
+    return re.sub(r"\[(VERIFICAR|PACTUAR)[^\]]*\]", rep, h)
 
 # ---------------- load ----------------
 protos = []
@@ -86,6 +94,7 @@ def header(rel, compact=False):
       <img src="{rel}assets/brasao.png" alt="Brasão de Estiva Gerbi — Luta e Conquista" width="56" height="56">
       <span class="brand-txt"><strong>Protocolos de Urgência e Emergência</strong><small>Pronto-Socorro Natal Diegues — Estiva Gerbi/SP</small></span>
     </a>
+    <nav class="topnav" aria-label="Principal"><a href="{rel}index.html">Protocolos</a><a href="{rel}calculadora.html">Calculadora</a></nav>
     <img class="logo-pref" src="{rel}assets/prefeitura.png" alt="Prefeitura Municipal de Estiva Gerbi — Um governo humanizado" width="150">
   </div>
 </header>'''
@@ -100,13 +109,14 @@ def footer(rel):
     </div>
     <div>
       <strong>Uso</strong>
-      <p>Material de apoio à decisão para a equipe do PS. Não substitui o julgamento clínico à beira-leito nem a bula/diretriz vigente. Itens marcados <mark class="verif">[VERIFICAR]</mark> exigem conferência local antes da aprovação.</p>
+      <p>Material de apoio à decisão para a equipe do PS. Não substitui o julgamento clínico à beira-leito nem a bula/diretriz vigente. Doses são expressas como dose total/taxa; <b>apresentações e diluições variam por lote</b> — conferir sempre a ampola em uso (ver <a href="{rel}calculadora.html">calculadora</a>).</p>
     </div>
     <div>
       <strong>Documentos</strong>
       <p><a href="{rel}pdf/PS_NatalDiegues_00_INDICE_e_PENDENCIAS.pdf">Índice geral e pendências (PDF)</a><br><a href="{rel}index.html#rede">Rede de referência pactuada</a></p>
     </div>
   </div>
+  <div class="wrap foot-cred"><span><b>Desenvolvido por</b> Felipe Ribeiro Toledo — Médico — CRM-SP 216.986</span><span><b>Verificação e validação dos dados e protocolos</b> Edgar Aguiar</span></div>
   <div class="wrap foot-bottom">Prefeitura Municipal de Estiva Gerbi — Secretaria Municipal de Saúde • Site estático para consulta rápida.</div>
 </footer>'''
 
@@ -252,11 +262,13 @@ for i, p in enumerate(protos):
     </div>
     <a class="btn-pdf" href="{rel}pdf/{p["pdf"]}" download>Baixar PDF</a>
     <button class="btn-print" type="button" onclick="window.print()">Imprimir</button>
+    <a class="btn-calc" href="{rel}calculadora.html">Calculadora de diluição</a>
   </div>
 </div>
 
 <section id="resumo" role="tabpanel" aria-labelledby="tab-resumo" class="mode-panel">
   <p class="mode-note">Síntese fiel ao protocolo completo, para consulta à beira-leito. Em dúvida, confira o documento completo.</p>
+  <div class="box box-warn med-note"><b>Medicamentos:</b> as doses abaixo são doses totais/taxas do protocolo. Itens marcados <mark class="verif verif-med">⚠ verificar posologia/apresentação</mark> dependem do lote em uso — confira a ampola e calcule o preparo na <a href="{rel}calculadora.html">calculadora de diluição</a>.</div>
   {summary_block(p, flow_svg)}
 </section>
 
@@ -274,6 +286,14 @@ for i, p in enumerate(protos):
     open(os.path.join(OUT, "protocolos", p["slug"] + ".html"), "w", encoding="utf-8").write(
         page(f"{p['short_title']} — {p['code']} — PS Natal Diegues", body, rel, compact=True,
              desc=p["title"]))
+
+# calculadora
+calc_body = open(os.path.join(ROOT, "site_src", "calc_body.html"), encoding="utf-8").read()
+open(os.path.join(OUT, "assets", "calc.js"), "w", encoding="utf-8").write(open(os.path.join(ROOT, "site_src", "calc.js"), encoding="utf-8").read())
+open(os.path.join(OUT, "calculadora.html"), "w", encoding="utf-8").write(
+    page("Calculadora de diluição e infusão — PS Natal Diegues", calc_body, "./",
+         extra_head='<script src="./assets/calc.js" defer></script>', compact=True,
+         desc="Calculadora de diluição, velocidade de infusão e doses por peso das drogas usadas nos protocolos do PS Natal Diegues."))
 
 # README + 404
 open(os.path.join(OUT, "README.md"), "w", encoding="utf-8").write(f"""# Protocolos de Urgência — PS Natal Diegues (Estiva Gerbi/SP)
